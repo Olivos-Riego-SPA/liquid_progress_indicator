@@ -6,7 +6,7 @@ class LiquidLinearProgressIndicatorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Liquid Linear Progress Indicators"),
+        title: Text("Liquid Linears Progress Indicators"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -14,11 +14,14 @@ class LiquidLinearProgressIndicatorPage extends StatelessWidget {
           _AnimatedLiquidLinearProgressIndicator(),
           Container(
             width: double.infinity,
-            height: 35,
+            height: 150,
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: LiquidLinearProgressIndicator(
-              backgroundColor: Colors.black,
+              direction: Axis.vertical,
+              backgroundColor: Colors.white,
               valueColor: AlwaysStoppedAnimation(Colors.red),
+              waveDurationSeconds: 1,
+              waveInclination: 3,
             ),
           ),
           Container(
@@ -38,6 +41,7 @@ class LiquidLinearProgressIndicatorPage extends StatelessWidget {
             height: 35,
             padding: EdgeInsets.symmetric(horizontal: 24.0),
             child: LiquidLinearProgressIndicator(
+              direction: Axis.horizontal,
               backgroundColor: Colors.white,
               valueColor: AlwaysStoppedAnimation(Colors.grey),
               borderColor: Colors.blue,
@@ -102,10 +106,11 @@ class _AnimatedLiquidLinearProgressIndicatorState
     return Center(
       child: Container(
         width: double.infinity,
-        height: 75.0,
+        height: 150.0,
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: LiquidLinearProgressIndicator(
           value: _animationController.value,
+          direction: Axis.vertical,
           backgroundColor: Colors.white,
           valueColor: AlwaysStoppedAnimation(Colors.blue),
           borderRadius: 12.0,

@@ -6,12 +6,16 @@ class Wave extends StatefulWidget {
   final double? value;
   final Color color;
   final Axis direction;
+  final double? waveInclination;
+  final int? waveDurationSeconds;
 
   const Wave({
     Key? key,
     required this.value,
     required this.color,
     required this.direction,
+    this.waveInclination = 30,
+    this.waveDurationSeconds = 2,
   }) : super(key: key);
 
   @override
@@ -27,7 +31,7 @@ class _WaveState extends State<Wave> with SingleTickerProviderStateMixin {
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: widget.waveDurationSeconds ?? 2),
     );
     _animationController.repeat();
   }
@@ -53,6 +57,7 @@ class _WaveState extends State<Wave> with SingleTickerProviderStateMixin {
           animationValue: _animationController.value,
           value: widget.value,
           direction: widget.direction,
+          waveInclination: widget.waveInclination ?? 30,
         ),
       ),
     );
@@ -63,18 +68,20 @@ class _WaveClipper extends CustomClipper<Path> {
   final double animationValue;
   final double? value;
   final Axis direction;
+  final double waveInclination;
 
   _WaveClipper({
     required this.animationValue,
     required this.value,
     required this.direction,
+    required this.waveInclination,
   });
 
   @override
   Path getClip(Size size) {
     if (direction == Axis.horizontal) {
       Path path = Path()
-        ..addPolygon(_generateHorizontalWavePath(size), false)
+        ..addPolygon(_generateHorizontalWavePath(size, waveInclination), false)
         ..lineTo(0.0, size.height)
         ..lineTo(0.0, 0.0)
         ..close();
@@ -82,17 +89,17 @@ class _WaveClipper extends CustomClipper<Path> {
     }
 
     Path path = Path()
-      ..addPolygon(_generateVerticalWavePath(size), false)
+      ..addPolygon(_generateVerticalWavePath(size, waveInclination), false)
       ..lineTo(size.width, size.height)
       ..lineTo(0.0, size.height)
       ..close();
     return path;
   }
 
-  List<Offset> _generateHorizontalWavePath(Size size) {
+  List<Offset> _generateHorizontalWavePath(Size size, double waveInclination) {
     final waveList = <Offset>[];
-    for (int i = -2; i <= size.height.toInt() + 2; i++) {
-      final waveHeight = (size.width / 20);
+    for (int i = -3; i <= size.height.toInt() + 3; i++) {
+      final waveHeight = (size.width / 50);
       final dx = math.sin((animationValue * 360 - i) % 360 * (math.pi / 180)) *
               waveHeight +
           (size.width * value!);
@@ -101,10 +108,10 @@ class _WaveClipper extends CustomClipper<Path> {
     return waveList;
   }
 
-  List<Offset> _generateVerticalWavePath(Size size) {
+  List<Offset> _generateVerticalWavePath(Size size, double waveInclination) {
     final waveList = <Offset>[];
-    for (int i = -2; i <= size.width.toInt() + 2; i++) {
-      final waveHeight = (size.height / 20);
+    for (int i = -3; i <= size.width.toInt() + 3; i++) {
+      final waveHeight = (size.height / waveInclination);
       final dy = math.sin((animationValue * 360 - i) % 360 * (math.pi / 180)) *
               waveHeight +
           (size.height - (size.height * value!));
